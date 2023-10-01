@@ -10,9 +10,11 @@ import SwiftUI
 @main
 struct SwiftUI_Bookworm_SampleApp: App {
     @StateObject private var dataController = DataController()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(\.managedObjectContext, dataController.container.viewContext)
         }
     }
 }
