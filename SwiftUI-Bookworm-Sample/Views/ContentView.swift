@@ -9,9 +9,20 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) var moc
-    @FetchRequest(sortDescriptors: []) var books: FetchedResults<Book>
+    @FetchRequest(sortDescriptors: [
+        SortDescriptor(\.title)
+    ]) var books: FetchedResults<Book>
     
     @State private var showingAddScreen = false
+    
+    func deleteBooks(at offsets: IndexSet) {
+        for offset in offsets {
+            let book = books[offset]
+            moc.delete(book)
+        }
+        
+       // try? moc.save()
+    }
     
     var body: some View {
         NavigationStack{
@@ -35,9 +46,14 @@ struct ContentView: View {
                         } //: HStack
                     } //: Navlink
                 } //: ForEach
+                .onDelete(perform: deleteBooks)
             }
             .navigationTitle("Bookworm")
             .toolbar{
+                ToolbarItem(placement: .topBarLeading) {
+                    EditButton()
+                }
+                
                 ToolbarItem(placement: .topBarTrailing) {
                     Button{
                         showingAddScreen.toggle()
